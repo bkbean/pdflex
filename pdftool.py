@@ -220,7 +220,7 @@ def convert_format(input_path: str, output_path: Optional[str] = None, src_type:
         return RC.INVALID_OUTPUT
 
     file_name = os.path.splitext(os.path.basename(input_path))[0]
-    output_path = output_path if output_path else f'{file_name}-convert.{dst_type}'
+    output_path = output_path if output_path else f'{file_name}.{dst_type}'
 
     if os.path.exists(output_path):
         print(f'转换文件发生错误: {os.path.abspath(output_path)} 已存在，请指定一个新文件名')

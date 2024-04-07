@@ -1,1 +1,5 @@
 __pycache__/
+pdf-test-split/
+test/
+pdf-test.pdf
+test-merge.pdf

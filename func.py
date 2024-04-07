@@ -1,5 +1,6 @@
 import fitz
 import os
+from typing import Optional
 
 def merge_pixmap(pixmap_list: list[fitz.Pixmap]) -> fitz.Pixmap:
     """
@@ -32,15 +33,15 @@ def merge_pixmap(pixmap_list: list[fitz.Pixmap]) -> fitz.Pixmap:
     return tar_pix
 
 
-def get_file_type(filename: str) -> str:
+def get_file_type(filename: Optional[str]) -> str:
     """
     通过文件的扩展名获取文件类型
 
     参数：
-    filename -- 文件名或文件路径
+        filename -- 文件名或文件路径
 
     返回值：
-    文件类型字符串
+        文件类型字符串
     """
     filename = filename if filename else ''
     file_ext = os.path.splitext(filename)[1].lower()

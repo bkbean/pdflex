@@ -3,26 +3,29 @@
 import argparse
 import fitz
 import os
+from typing import Optional
 from cons import *
 from func import *
 
 
-def split_pdf(input_path: str, output_path: str = None, page_count: int = 1, src_type: str = None, dst_type: str = None) -> RC:
+def split_pdf(input_path: str, output_path: Optional[str], page_count: int = 1, src_type: Optional[str] = None, dst_type: Optional[str] = None) -> RC:
     """
     拆分文件到指定目录
 
-    参数：
-    input_path -- 输入文件
-    output_path -- 输出目录
-    page_count -- 拆分页数
-    src_type -- 输入文件类型
-    dst_type -- 输出文件类型
 
+    参数：
+        input_path -- 输入文件
+        output_path -- 输出目录
+        page_count -- 拆分页数
+        src_type -- 输入文件类型
+        dst_type -- 输出文件类型
+
+    
     返回值：
-    执行结果
+        执行结果
     """
 
-    if not input_path:
+    if input_path is None:
         print(f'拆分文件发生错误: 没有指定输入文件')
         return RC.NULL_INPUT
     
@@ -109,20 +112,20 @@ def split_pdf(input_path: str, output_path: str = None, page_count: int = 1, src
     return RC.SUCCESS
 
 
-def merge_pdf(input_path: str, output_path: str, dst_type: str = None) -> RC:
+def merge_pdf(input_path: str, output_path: str, dst_type: Optional[str] = None) -> RC:
     """
     合并文件
 
     参数：
-    input_path -- 输入目录
-    output_path -- 输出文件
-    dst_type -- 输出文件类型
+        input_path -- 输入目录
+        output_path -- 输出文件
+        dst_type -- 输出文件类型
 
     返回值：
-    执行结果
+        执行结果
     """
 
-    if not input_path:
+    if input_path is None:
         print(f'合并文件发生错误: 没有指定输入目录')
         return RC.NULL_INPUT
 
@@ -178,20 +181,20 @@ def merge_pdf(input_path: str, output_path: str, dst_type: str = None) -> RC:
     return RC.SUCCESS
 
 
-def convert_format(input_path: str, output_path: str = None, src_type: str = None, dst_type: str = None) -> RC:
+def convert_format(input_path: str, output_path: Optional[str] = None, src_type: Optional[str] = None, dst_type: Optional[str] = None) -> RC:
     """
     转换文件类型
 
     参数：
-    input_path -- 输入文件
-    output_path -- 输出文件
-    src_type -- 输入文件类型
-    dst_type -- 输出文件类型
+        input_path -- 输入文件
+        output_path -- 输出文件
+        src_type -- 输入文件类型
+        dst_type -- 输出文件类型
 
     返回值：
-    执行结果
+        执行结果
     """
-    if not input_path:
+    if input_path is None:
         print(f'转换文件发生错误: 没有指定输入文件')
         return RC.NULL_INPUT
 
@@ -259,20 +262,21 @@ def convert_format(input_path: str, output_path: str = None, src_type: str = Non
 if __name__ == '__main__':
 
     # 创建命令行参数解析器
-    parser = argparse.ArgumentParser(description='PDF 文件工具，可以拆分文档、合并文件、转换文件格式')
+    parser = argparse.ArgumentParser(description='PDF 工具，可以拆分和合并 PDF 文件，转换文件格式。')
 
     parser.add_argument('input', nargs='?', help='输入路径')
     parser.add_argument('-o', '--output', help='输出路径')
 
     # 创建互斥参数组
     group = parser.add_mutually_exclusive_group()
-    group.add_argument('-s', '--split', action='store_true', help='拆分文档，拆分指定文档文件到目录')
-    group.add_argument('-m', '--merge', action='store_true', help='合并文件，合并目录中的文件到单一文件')
-    group.add_argument('-c', '--convert', action='store_true', help='转换文件格式，支持文档和图像格式')
+    group.add_argument('-s', '--split', action='store_true', help='拆分文档到指定的目录')
+    group.add_argument('-m', '--merge', action='store_true', help='合并指定目录中的文件到单一文件')
+    group.add_argument('-c', '--convert', action='store_true', help='转换文件格式')
+
     # 添加其他选项参数
     parser.add_argument('-p', '--page_count', type=int, default=1, help='拆分文档时单个拆分文件所包含的页数，默认为 1 页')
     parser.add_argument('-f', '--src_type', help='输入文件类型')
-    parser.add_argument('-t', '--dst_type', help='输出文件类型，默认为 pdf')
+    parser.add_argument('-t', '--dst_type', help='输出文件类型')
 
     # 解析命令行参数
     args = parser.parse_args()
@@ -286,8 +290,8 @@ if __name__ == '__main__':
     else:
         filename = os.path.basename(__file__)
         delimiter = ', '
-        print(f'输入 {filename} -h 查看帮助信息\n')
-        print(f'{filename} supports the following file types:\n')
-        print(f'input\nDocument Formats: {delimiter.join(IFORMATS_DOC)}\nImage Formats: {delimiter.join(IFORMATS_IMG)}\n')
-        print(f'-o, --output\nDocument Formats: pdf\nImage Formats: {delimiter.join(OFORMATS_IMG)}')
+        print(f'输入 {filename} -h 查看帮助信息')
+        print(f'{filename} 的输入输出支持以下文件类型:')
+        print(f'输入[input]\n文档格式: {delimiter.join(IFORMATS_DOC)}\n图片格式: {delimiter.join(IFORMATS_IMG)}')
+        print(f'输出[-o, --output]\n文档格式: pdf\n图片格式: {delimiter.join(OFORMATS_IMG)}')
 

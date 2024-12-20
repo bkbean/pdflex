@@ -72,17 +72,17 @@ def split_pdf(input_path: str, output_path: Optional[str], page_count: int = 1, 
     if src_type not in IFORMATS_DOC:
         raise ValueError(f'拆分文件发生错误, 不支持的输入类型 {src_type}.')
 
+    # 如果 dst_type 不为空则将其转换为小写字母形式；否则将其设为默认值 'pdf'
+    dst_type = dst_type.lower() if dst_type else 'pdf'
+    if dst_type != 'pdf' and dst_type not in OFORMATS_IMG:
+        raise ValueError(f'拆分文件发生错误, 不支持的输出类型 {dst_type}.')
+
     try:
         with fitz.open(input_path, filetype=src_type) as in_doc:
             pass
     except Exception as e:
         # 捕获所有类型的异常
         raise ValueError(f'拆分文件发生错误 {type(e).__name__}: {e}')
-    
-    # 如果 dst_type 不为空则将其转换为小写字母形式；否则将其设为默认值 'pdf'
-    dst_type = dst_type.lower() if dst_type else 'pdf'
-    if dst_type != 'pdf' and dst_type not in OFORMATS_IMG:
-        raise ValueError(f'拆分文件发生错误, 不支持的输出类型 {dst_type}')
 
     # 通过 splitext 将路径拆分为 (root, ext)
     dst_dir = os.path.splitext(os.path.basename(input_path))[0]+'-split'
@@ -104,7 +104,7 @@ def split_pdf(input_path: str, output_path: Optional[str], page_count: int = 1, 
     # 按指定的页数拆分为单独的文件
     page_count = page_count if page_count > 0 else 1
     if total_pages <= page_count:
-        print(f'{input_path} 总页数为 {total_pages}, 无需拆分.')
+        print(f'文档"{input_path}"共{total_pages}页, 无需拆分.')
         # 关闭源文件
         in_doc.close()
         return
@@ -167,11 +167,14 @@ def merge_pdf(input_path: str, output_path: str, dst_type: Optional[str] = None)
     output_path = output_path if output_path else f'{dir_name}-merge.{dst_type}'
 
     if os.path.exists(output_path):
-        raise FileExistsError(f'合并文件发生错误, {os.path.abspath(output_path)} 已存在, 请指定一个新文件名.')
+        raise FileExistsError(f'合并文件发生错误, 文件"{os.path.abspath(output_path)}"已存在, 请重新指定输出文件名.')
 
     pdf_merger = fitz.open()
     count = 0
     files = sorted(os.listdir(input_path))
+    if len(files) < 1:
+        raise FileNotFoundError(f'合并文件发生错误, 输入目录为空.')
+
     for file_name in files:
         ipath = os.path.join(input_path, file_name)
         src_type = get_file_type(file_name)
@@ -179,7 +182,7 @@ def merge_pdf(input_path: str, output_path: str, dst_type: Optional[str] = None)
             pdf_merger.insert_file(ipath)
             count += 1
         else:
-            print(f'合并文件发生错误, 不支持的输入文件 {ipath}.')
+            print(f'合并文件发生错误, 不支持的输入文件"{ipath}".')
 
     if dst_type == 'pdf':
         # 保存合并后的 PDF 文件
@@ -199,7 +202,7 @@ def merge_pdf(input_path: str, output_path: str, dst_type: Optional[str] = None)
         # 保存图像
         tar_pix.save(output_path,output=dst_type)
 
-    print(f'指定目录共有文件 {len(files)} 个, 合并 {count} 个, 无法处理 {len(files)-count} 个.')
+    print(f'输入目录共有文件{len(files)}个, 已合并{count}个, 合并失败{len(files)-count}个.')
     return
 
 def convert_format(input_path: str, output_path: Optional[str] = None, src_type: Optional[str] = None, dst_type: Optional[str] = None) -> None:
@@ -223,24 +226,24 @@ def convert_format(input_path: str, output_path: Optional[str] = None, src_type:
     if src_type not in IFORMATS_DOC and src_type not in IFORMATS_IMG:
         raise ValueError(f'转换文件发生错误, 不支持的输入类型 {src_type}.')
 
-    try:
-        with fitz.open(input_path, filetype=src_type) as in_doc:
-            pass
-    except Exception as e:
-        # 捕获所有类型的异常
-        raise ValueError(f'转换文件发生错误, {type(e).__name__}: {e}.')
-
     # 如果 dst_type 不为空则将其转换为小写字母形式；否则通过文件扩展名获取文件类型
     dst_type = dst_type.lower() if dst_type else get_file_type(output_path)
     dst_type = dst_type if dst_type else 'pdf'
     if dst_type != 'pdf' and dst_type not in OFORMATS_IMG:
         raise ValueError(f'转换文件发生错误, 不支持的输出类型 {dst_type}.')
 
+    try:
+        with fitz.open(input_path, filetype=src_type) as in_doc:
+            pass
+    except Exception as e:
+        # 捕获所有类型的异常
+        raise ValueError(f'转换文件发生错误, {type(e).__name__}, {e}.')
+
     file_name = os.path.splitext(os.path.basename(input_path))[0]
     output_path = output_path if output_path else f'{file_name}.{dst_type}'
 
     if os.path.exists(output_path):
-        raise FileExistsError(f'转换文件发生错误, {os.path.abspath(output_path)} 已存在, 请指定一个新文件名.')
+        raise FileExistsError(f'转换文件发生错误, 文件"{os.path.abspath(output_path)}"已存在, 请重新指定输出文件名.')
 
     if src_type == dst_type:
         print(f'输入输出格式相同, 不需要转换.')

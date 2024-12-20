@@ -28,16 +28,19 @@ def main():
 
     # 解析命令行参数
     args = parser.parse_args()
-    
-    if args.split:
-        split_pdf(args.input, args.output, args.page_count, args.src_type, args.dst_type)
-    elif args.merge:
-        merge_pdf(args.input, args.output, args.dst_type)
-    elif args.convert:
-        convert_format(args.input, args.output,  args.src_type, args.dst_type)
-    else:
-        filename = os.path.basename(__file__)
-        print(f'输入 python {filename} -h 查看帮助信息.')
+
+    try:
+        if args.split:
+            split_pdf(args.input, args.output, args.page_count, args.src_type, args.dst_type)
+        elif args.merge:
+            merge_pdf(args.input, args.output, args.dst_type)
+        elif args.convert:
+            convert_format(args.input, args.output,  args.src_type, args.dst_type)
+        else:
+            filename = os.path.basename(__file__)
+            print(f'输入 python {filename} -h 查看帮助信息.')
+    except Exception as e:
+        print(f'{type(e).__name__}: {e}')
 
 if __name__ == '__main__':
     main()

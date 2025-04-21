@@ -1,0 +1,30 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "pdftool"
+version = "0.9.1"
+authors = [
+  { name = "xab <xab@lan>" }
+]
+description = "PDF工具，可以拆分合并文件、转换文件格式。"
+readme = "README.md"
+requires-python = ">=3.10"
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent"
+]
+license = "MIT"
+license-files = ["LICEN[CS]E*"]
+
+dependencies = [
+  "PyMuPDF>=1.25.3,<2.0"
+]
+
+[project.urls]
+Homepage = "https://github.com/bkbean/pdftool"
+Issues = "https://github.com/bkbean/pdftool/issues"

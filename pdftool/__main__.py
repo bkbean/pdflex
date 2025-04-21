@@ -1,16 +1,12 @@
 #! /usr/bin/env python
-
 import argparse
-import os
-
-from cons import IFORMATS_DOC,IFORMATS_IMG,OFORMATS_IMG
-from func import split_pdf,merge_pdf,convert_format
+from .cons import IFORMATS_DOC,IFORMATS_IMG,OFORMATS_IMG
+from .func import split_pdf,merge_pdf,convert_format
 
 
 def main():
     # 创建命令行参数解析器
     parser = argparse.ArgumentParser(description='PDF工具, 可以对PDF文件进行拆分、合并和转换格式.')
-
     parser.add_argument('input', nargs='?', help='输入文档或目录')
     parser.add_argument('-o', '--output', help='输出文档或目录')
 
@@ -37,8 +33,7 @@ def main():
         elif args.convert:
             convert_format(args.input, args.output,  args.src_type, args.dst_type)
         else:
-            filename = os.path.basename(__file__)
-            print(f'输入 python {filename} -h 查看帮助信息.')
+            print(f'输入 python -m {__package__} -h 查看帮助信息.')
     except Exception as e:
         print(f'{type(e).__name__}: {e}')
 

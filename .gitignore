@@ -9,6 +9,7 @@ __pycache__/
 *.log
 
 # 忽略指定目录和文件
-input/
-output/
+dist/
+test_data/
 *.pdf
+*.png

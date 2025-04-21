@@ -1,8 +1,7 @@
 import os
 import fitz
 from typing import Optional
-
-from cons import IFORMATS_DOC,IFORMATS_IMG,OFORMATS_IMG
+from .cons import IFORMATS_DOC,IFORMATS_IMG,OFORMATS_IMG
 
 
 def get_file_type(filename: Optional[str]) -> str:

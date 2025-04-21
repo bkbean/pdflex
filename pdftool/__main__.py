@@ -1,28 +1,71 @@
 #! /usr/bin/env python
-import argparse
+import sys
+from argparse import ArgumentParser
 from .cons import IFORMATS_DOC,IFORMATS_IMG,OFORMATS_IMG
 from .func import split_pdf,merge_pdf,convert_format
 
 
-def main():
-    # 创建命令行参数解析器
-    parser = argparse.ArgumentParser(description='PDF工具, 可以对PDF文件进行拆分、合并和转换格式.')
-    parser.add_argument('input', nargs='?', help='输入文档或目录')
-    parser.add_argument('-o', '--output', help='输出文档或目录')
+def create_parser() -> ArgumentParser:
+    """创建并配置参数解析器"""
+    parser = ArgumentParser(
+        prog='pdftool',     # 设置你想要的程序名
+        description='PDF工具, 可以对PDF文件进行拆分、合并和转换格式.'
+        )
+    
+    # 必需参数组
+    required = parser.add_argument_group('输入输出')
+    required.add_argument(
+        'input', 
+        nargs='?',
+        help='输入文档或目录路径'
+    )
+    required.add_argument(
+        '-o', '--output',
+        required=False,     # 根据操作类型可能变为必需
+        help='输出文档或目录路径'
+    )
 
-    # 创建互斥参数组
-    group = parser.add_mutually_exclusive_group()
-    group.add_argument('-s', '--split', action='store_true', help='拆分文档到输出目录')
-    group.add_argument('-m', '--merge', action='store_true', help='合并输入目录中的文档到单一文档')
-    group.add_argument('-c', '--convert', action='store_true', help='转换文件格式')
+    # 操作模式组 (互斥)
+    mode_group = parser.add_mutually_exclusive_group(required=False)
+    mode_group.add_argument(
+        '-s', '--split', 
+        action='store_true',
+        help='拆分PDF文档'
+    )
+    mode_group.add_argument(
+        '-m', '--merge', 
+        action='store_true',
+        help='合并多个文档'
+    )
+    mode_group.add_argument(
+        '-c', '--convert', 
+        action='store_true',
+        help='转换文件格式'
+    )
 
-    # 添加其他选项参数
-    parser.add_argument('-p', '--page_count', type=int, default=1, help='生成拆分文档的页数(默认1页)')
-    delimiter = ','
-    parser.add_argument('-f', '--src_type', help=f'输入文件类型, 文档类型:{delimiter.join(IFORMATS_DOC)}; 图片类型:{delimiter.join(IFORMATS_IMG)}.')
-    parser.add_argument('-t', '--dst_type', help=f'输出文件类型, 文档类型:pdf; 图片类型:{delimiter.join(OFORMATS_IMG)}.')
+    # 选项参数组
+    options = parser.add_argument_group('处理选项')
+    options.add_argument(
+        '-p', '--page_count', 
+        type=int, 
+        default=1,
+        help='拆分时每个子文档的页数 (默认: 1)'
+    )
+    options.add_argument(
+        '-f', '--src_type',
+        help=f'输入文件类型. 文档类型:{','.join(IFORMATS_DOC)}; 图片类型:{','.join(IFORMATS_IMG)}.'
+    )
+    options.add_argument(
+        '-t', '--dst_type',
+        help=f'输出文件类型. 文档类型:pdf; 图片类型:{','.join(OFORMATS_IMG)}.'
+    )
+    
+    return parser
 
-    # 解析命令行参数
+def main() -> None:
+    """主入口函数"""
+
+    parser = create_parser()
     args = parser.parse_args()
 
     try:
@@ -35,7 +78,8 @@ def main():
         else:
             print(f'输入 python -m {__package__} -h 查看帮助信息.')
     except Exception as e:
-        print(f'{type(e).__name__}: {e}')
+        print(f"\n错误: {e}", file=sys.stderr)
+        sys.exit(1)
 
 if __name__ == '__main__':
     main()

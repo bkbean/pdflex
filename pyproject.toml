@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "pdftool"
+name = "pdflex"
 version = "0.5.0"
 authors = [
   { name = "xab <xab@lan>" }
@@ -26,5 +26,5 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/bkbean/pdftool"
-Issues = "https://github.com/bkbean/pdftool/issues"
+Homepage = "https://github.com/bkbean/pdflex"
+Issues = "https://github.com/bkbean/pdflex/issues"

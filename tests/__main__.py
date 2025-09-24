@@ -1,6 +1,6 @@
 import unittest
 from parameterized import parameterized
-from pdftool.func import get_file_type
+from pdflex.func import get_file_type
 
 
 # 编写参数化测试用例

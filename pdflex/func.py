@@ -112,7 +112,7 @@ def split_pdf(input_path: str, output_path: Optional[str], page_count: int = 1, 
         # 拆分文件的结束页
         last_page = min(i+page_count,total_pages)-1
         # 构建输出文件名
-        ofile_path = os.path.join(output_path, f'{output_path}{i+1}-{last_page+1}.{dst_type}')
+        ofile_path = os.path.join(output_path, f'{output_path}{i//page_count:04d}-{i+1}_{last_page+1}.{dst_type}')
 
         if dst_type == 'pdf':
             # 创建一个新的 PDF 文件

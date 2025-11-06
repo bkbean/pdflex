@@ -4,15 +4,18 @@ version = "0.6.0"
 authors = [
   { name = "xab <xab@lan>" }
 ]
+maintainers = [
+  {name = "XAB", email = "xab@lan"},
+]
 description = "PDF工具，可以拆分合并文件、转换文件格式。"
 readme = "README.md"
 requires-python = ">=3.10"
 classifiers = [
+  "Operating System :: OS Independent"
   "Programming Language :: Python :: 3",
   "Programming Language :: Python :: 3.12",
   "Programming Language :: Python :: 3.13",
   "License :: OSI Approved :: MIT License",
-  "Operating System :: OS Independent"
 ]
 license = "MIT"
 license-files = ["LICEN[CS]E*"]
